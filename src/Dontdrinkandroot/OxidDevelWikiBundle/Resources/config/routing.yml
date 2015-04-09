@@ -1,0 +1,3 @@
+ddr_oxid_devel_wiki_homepage:
+    path:     /
+    defaults: { _controller: DdrOxidDevelWikiBundle:Default:index }

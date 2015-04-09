@@ -1,0 +1,3 @@
+services:
+    ddr_oxid_devel_wiki.user_provider:
+        class: Dontdrinkandroot\OxidDevelWikiBundle\Security\OxidDeveloperUserProvider

@@ -1,0 +1,23 @@
+security:
+    providers:
+        hwi_oauth:
+            id: ddr_oxid_devel_wiki.user_provider
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        app:
+            pattern: ^/
+            anonymous: ~
+            logout: ~
+            oauth:
+                resource_owners:
+                    github: "/login/check-github"
+                login_path: /connect/github
+                oauth_user_provider:
+                    service: ddr_oxid_devel_wiki.user_provider
+
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
