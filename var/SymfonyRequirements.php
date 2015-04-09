@@ -32,15 +32,10 @@
  */
 class Requirement
 {
-
     private $fulfilled;
-
     private $testMessage;
-
     private $helpText;
-
     private $helpHtml;
-
     private $optional;
 
     /**
@@ -190,7 +185,6 @@ class PhpIniRequirement extends Requirement
  */
 class RequirementCollection implements IteratorAggregate
 {
-
     private $requirements = array();
 
     /**

@@ -32,8 +32,7 @@ class OxidDeveloperUserProvider implements UserProviderInterface, OAuthAwareUser
 
         /** @var CurrentUser $userApi */
         $userApi = $client->api('currentUser');
-//        $githubUser = $userApi->show();
-//        $teams = $userApi->teams();
+        $teams = $userApi->teams();
         $githubEmails = $userApi->emails()->all();
         $email = $this->findPrimaryEmail($githubEmails);
 
@@ -41,11 +40,13 @@ class OxidDeveloperUserProvider implements UserProviderInterface, OAuthAwareUser
 
         $user = new User($userName, $email, $accessToken);
 
-//        /** @var OrganizationApi $organizationApi */
-//        $organizationApi = $client->api('organization');
-//        $teams = $organizationApi->teams()->all('OXID-eSales');
+        if ($this->isDeveloperMember($teams)) {
+            $user->addRole('ROLE_WATCHER');
+        }
 
-//        $user->addRole('ROLE_WATCHER');
+        if ($this->isAdminMember($teams)) {
+            $user->addRole('ROLE_ADMIN');
+        }
 
         return $user;
     }
@@ -55,7 +56,6 @@ class OxidDeveloperUserProvider implements UserProviderInterface, OAuthAwareUser
      */
     public function loadUserByUsername($username)
     {
-        // TODO: Implement loadUserByUsername() method.
         throw new \RuntimeException();
     }
 
@@ -93,5 +93,42 @@ class OxidDeveloperUserProvider implements UserProviderInterface, OAuthAwareUser
         }
 
         throw new \RuntimeException('No valid eMail found');
+    }
+
+    /**
+     * @param array $teams
+     *
+     * @return bool
+     */
+    private function isDeveloperMember(array $teams)
+    {
+        return $this->isMember($teams, 1223243);
+    }
+
+    /**
+     * @param array $teams
+     *
+     * @return bool
+     */
+    private function isAdminMember(array $teams)
+    {
+        return $this->isMember($teams, 333525);
+    }
+
+    /**
+     * @param array $teams
+     * @param int   $id
+     *
+     * @return bool
+     */
+    private function isMember(array $teams, $id)
+    {
+        foreach ($teams as $team) {
+            if ($team['id'] === $id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
