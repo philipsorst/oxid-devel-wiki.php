@@ -16,7 +16,7 @@ class User implements UserInterface, GitUserInterface
     /**
      * @var string
      */
-    private $userName;
+    private $realName;
 
     /**
      * @var string
@@ -28,11 +28,23 @@ class User implements UserInterface, GitUserInterface
      */
     private $roles = [];
 
-    public function __construct($userName, $email, $token)
+    /**
+     * @var string
+     */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $login;
+
+    public function __construct($id, $login, $realName, $email, $token)
     {
-        $this->userName = $userName;
+        $this->realName = $realName;
         $this->email = $email;
         $this->token = $token;
+        $this->id = $id;
+        $this->login = $login;
     }
 
     /**
@@ -64,7 +76,7 @@ class User implements UserInterface, GitUserInterface
      */
     public function getUsername()
     {
-        return $this->userName;
+        return $this->realName;
     }
 
     /**
@@ -97,5 +109,25 @@ class User implements UserInterface, GitUserInterface
     public function addRole($role)
     {
         $this->roles[] = $role;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGitUserName()
+    {
+        if (!empty($this->realName)) {
+            return $this->realName;
+        }
+
+        return $this->login;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGitUserEmail()
+    {
+        return $this->getEmail();
     }
 }

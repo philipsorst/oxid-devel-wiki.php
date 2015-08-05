@@ -17,13 +17,15 @@
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
         "hwi/oauth-bundle": "0.3.*",
+        "dontdrinkandroot/utils": "0.3.x-dev",
         "dontdrinkandroot/gitki-bundle": "dev-master",
         "elasticsearch/elasticsearch": "~1.3",
         "braincrafted/bootstrap-bundle": "~2.0",
         "knplabs/github-api": "~1.4"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3"
+        "sensio/generator-bundle": "~2.3",
+        "twbs/bootstrap": "~3.3"
     },
     "scripts": {
         "post-root-package-install": [

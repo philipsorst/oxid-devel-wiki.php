@@ -43,9 +43,9 @@ foreach ($symfonyRequirements->getRecommendations() as $req) {
 }
 
 if ($checkPassed) {
-    echo_block('success', 'OK', 'Your system is ready to run Symfony2 projects', true);
+    echo_block('success', 'OK', 'Your system is ready to run Symfony2 projects');
 } else {
-    echo_block('error', 'ERROR', 'Your system is not ready to run Symfony2 projects', true);
+    echo_block('error', 'ERROR', 'Your system is not ready to run Symfony2 projects');
 
     echo_title('Fix the following mandatory requirements', 'red');
 
@@ -102,7 +102,7 @@ function echo_style($style, $message)
     // ANSI color codes
     $styles = array(
         'reset' => "\033[0m",
-        'red'   => "\033[31m",
+        'red' => "\033[31m",
         'green' => "\033[32m",
         'yellow' => "\033[33m",
         'error' => "\033[37;41m",

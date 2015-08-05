@@ -30,18 +30,26 @@ class OxidDeveloperUserProvider implements UserProviderInterface, OAuthAwareUser
         $accessToken = $response->getAccessToken();
         $client->authenticate($accessToken, Client::AUTH_HTTP_TOKEN);
 
+//        $teams = $this->getOxidTeams($client);
+
         /** @var CurrentUser $userApi */
         $userApi = $client->api('currentUser');
         $teams = $userApi->teams();
         $githubEmails = $userApi->emails()->all();
         $email = $this->findPrimaryEmail($githubEmails);
 
-        $userName = $response->getResponse()['name'];
+        $id = $response->getResponse()['id'];
+        $login = $response->getResponse()['login'];
+        $realName = $response->getResponse()['name'];
 
-        $user = new User($userName, $email, $accessToken);
+        $user = new User($id, $login, $realName, $email, $accessToken);
 
-        if ($this->isDeveloperMember($teams)) {
+        if ($this->isCommunityManagemementMember($teams) | $this->isDevelopmentWatchersMember($teams)) {
             $user->addRole('ROLE_WATCHER');
+        }
+
+        if ($this->isDevelopmentCommittersMembers($teams)) {
+            $user->addRole('ROLE_COMMITTER');
         }
 
         if ($this->isAdminMember($teams)) {
@@ -100,9 +108,29 @@ class OxidDeveloperUserProvider implements UserProviderInterface, OAuthAwareUser
      *
      * @return bool
      */
-    private function isDeveloperMember(array $teams)
+    private function isDevelopmentWatchersMember(array $teams)
+    {
+        return $this->isMember($teams, 1467821);
+    }
+
+    /**
+     * @param array $teams
+     *
+     * @return bool
+     */
+    private function isDevelopmentCommittersMembers(array $teams)
     {
         return $this->isMember($teams, 1223243);
+    }
+
+    /**
+     * @param array $teams
+     *
+     * @return bool
+     */
+    private function isCommunityManagemementMember(array $teams)
+    {
+        return $this->isMember($teams, 1286688);
     }
 
     /**
@@ -130,5 +158,19 @@ class OxidDeveloperUserProvider implements UserProviderInterface, OAuthAwareUser
         }
 
         return false;
+    }
+
+    /**
+     * @param Client $client
+     *
+     * @return \Guzzle\Http\EntityBodyInterface|mixed|string
+     */
+    private function getOxidTeams($client)
+    {
+        /** @var OrganizationApi $organizationApi */
+        $organizationApi = $client->api('organizations');
+        $teams = $organizationApi->teams()->all('OXID-eSales');
+
+        return $teams;
     }
 }
